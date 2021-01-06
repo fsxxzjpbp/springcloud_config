@@ -23,6 +23,13 @@ spring:
   redis:
     host: 192.168.220.132       #redis的ip地址以及端口号
     port: 6379
+  #rabbitMQ配置
+  rabbitmq:
+    host: 192.168.220.129
+    port: 5672
+    username: admin
+    password: 1111
+    virtual-host: /
 server:
   port: 9527        #端口号
 #设置注册中心的地址
@@ -30,5 +37,6 @@ eureka:
   client:
     service-url:
       defaultZone: http://127.0.0.1:8761/eureka/
+      
 
 
