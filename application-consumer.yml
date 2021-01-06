@@ -1,0 +1,42 @@
+#设置注册到eureka的名字
+spring:
+  application:
+    name: final-consumer
+
+  #端口
+server:
+  port: 8090
+  compression:
+    enabled: true #开启gzip压缩
+
+#注册中心的地址
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:8761/eureka
+
+#全局配置
+ribbon:
+  ConnectTimeout: 5000           # 请求连接的超时时间
+  ReadTimeout: 5000              # 请求处理的超时时间
+  OkToRetryOnAllOperations: true # 对所有操作请求都进行重试
+  MaxAutoRetries: 0              # 对当前实例的重试次数
+  MaxAutoRetriesNextServer: 1    # 切换实例的重试次数
+
+
+#开启熔断
+feign:
+  hystrix:
+    enabled: true
+
+hystrix:
+  command:
+    default:
+      circuitBreaker:
+        requestVolumeThreshold: 3            #断容器最小请求数，达到这个值过后才开始计算是否打开熔断器
+        errorThresholdPercentage: 50         #错误百分比条件，达到熔断器最小请求数后错误率达到百分之多少后打开熔断器
+        sleepWindowInMilliseconds: 5000      #默认5秒;熔断器打开后多少秒后熔断状态变成半熔断状态(对该微服务进行一次请求尝试，不成功则状态改成熔断，成功则关闭熔断器
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 10000     #设置hystrix时间超时设置   默认情况下是线程池隔离，超时时间10000ms
