@@ -1,0 +1,34 @@
+#开启服务名路由功能
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: final-consumer                    #路由ID，保持唯一
+          uri: lb://final-consumer              #lb代表从注册中心获取服务
+          predicates:
+            - Path=/gateway/**                  #路由条件，有很多断言方式，这是其中一种，根据地址，判断请求的路径包不包含这个
+          filters[0]: StripPrefix=1                #重写规则，转发前去掉1层路径，用的是过滤的原理
+          filters[1]:
+            name: RequestRateLimiter             #filter名称
+            args:
+              key-resolver: "#{@ipKeyResolver}"   #使用SpEL从容器中获取对象   ps. SpEL #{@key} 类似 前台的 EL表达式 ${key}  key值一定要相同，否则会找不到
+              redis-rate-limiter:
+                replenishRate: 1                 #令牌桶每秒填充平均速率:允许用户每秒处理多少个请求    每秒最多处理多少个请求，自己定
+                burstCapacity: 3                   #令牌桶的容量，最多可以处理多少个请求
+  application:
+    name: gateway   #向注册中心注册的名字
+  redis:
+    host: 192.168.220.132       #redis的ip地址以及端口号
+    port: 6379
+server:
+  port: 9527        #端口号
+#设置注册中心的地址
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:8761/eureka/
+
+
