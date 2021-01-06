@@ -2,8 +2,14 @@
 spring:
   application:
     name: final-consumer
-
-  #端口
+  #rabbitMQ配置
+  rabbitmq:
+    host: 192.168.220.129
+    port: 5672
+    username: admin
+    password: 1111
+    virtual-host: /
+#端口
 server:
   port: 8090
   compression:
